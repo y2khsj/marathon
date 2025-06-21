@@ -40,7 +40,7 @@ def filter_nearby(toilets, route_coords, radius):
 
 # ----------------------
 # 데이터 로딩
-gpx_path = "2024제마_수정.gpx"
+gpx_path = "2024jtbc.gpx"
 toilet_path = "서울시 공중화장실 위치정보.csv"
 
 route_coords = parse_gpx(gpx_path)
