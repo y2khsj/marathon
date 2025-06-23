@@ -18,7 +18,7 @@ def parse_gpx(file_path):
         coords.append((lat, lon))
     return coords
 
-# 거리 계산 (haversine 공식, m 단위)
+# 거리 계산 (Haversine, m 단위)
 def haversine_distance(lat1, lon1, lat2, lon2):
     R = 6371000
     phi1, phi2 = np.radians(lat1), np.radians(lat2)
@@ -28,6 +28,7 @@ def haversine_distance(lat1, lon1, lat2, lon2):
     return 2 * R * np.arcsin(np.sqrt(a))
 
 # 거리 필터링
+@st.cache_data
 def filter_nearby(toilets, route_coords, radius):
     nearby = []
     for _, row in toilets.iterrows():
@@ -44,7 +45,7 @@ gpx_path = "2024jtbc.gpx"
 toilet_path = "Seoul_Open_Restrooms.csv"
 
 route_coords = parse_gpx(gpx_path)
-route_sampled = route_coords[::60]  # 약 30~50m 간격으로 샘플링
+route_sampled = route_coords[::60]  # 좌표 수 줄이기
 
 toilets_df = pd.read_csv(toilet_path, encoding="euc-kr")
 toilets_df = toilets_df.rename(columns={"x 좌표": "lon", "y 좌표": "lat"})
@@ -59,7 +60,7 @@ st.markdown("📌 마라톤 경로 반경 내의 공중화장실 정보를 보�
 # 거리 슬라이더
 radius = st.slider("🏃‍♂️ 마라톤 코스로부터 반경 거리 (미터)", 10, 100, 50, step=10)
 
-# 필터링
+# 필터링 (캐싱)
 nearby_df = filter_nearby(toilets_df, route_sampled, radius)
 
 # 지도 생성
@@ -69,8 +70,8 @@ m = folium.Map(location=center, zoom_start=13)
 # 코스 표시
 folium.PolyLine(route_coords, color="blue", weight=5, tooltip="마라톤 코스").add_to(m)
 
-# 마커 표시
-for _, row in nearby_df.iterrows():
+# 마커 표시 (최대 50개)
+for _, row in nearby_df.head(50).iterrows():
     folium.Marker(
         location=[row['lat'], row['lon']],
         tooltip=row['도로명주소'],
@@ -82,8 +83,8 @@ for _, row in nearby_df.iterrows():
         icon=folium.Icon(color="green", icon="info-sign")
     ).add_to(m)
 
-# 지도 표시
+# 지도 출력
 st_folium(m, width=1000, height=600)
 
-# 통계
-st.markdown(f"🧮 반경 **{radius}m** 이내에 화장실 **{len(nearby_df)}개**가 있습니다.")
+# 통계 출력
+st.markdown(f"🧮 반경 **{radius}m** 이내 화장실 **{len(nearby_df)}개** 중 최대 **50개** 표시 중입니다.")
