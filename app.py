@@ -55,7 +55,7 @@ toilets_df = toilets_df[['도로명주소', 'lat', 'lon', '개방시간', '장�
 # Streamlit UI
 st.set_page_config(layout="wide")
 st.title("🚻 JTBC 마라톤 코스 주변 개방 화장실 안내")
-st.markdown("📌 마라톤 경로 반경 내의 공중화장실 정보를 보여줍니다.")
+st.markdown("📌 마라톤 경로 반경 내의 공중화장실 정보를 보여줍니다.(Created by Jun)")
 
 # 거리 슬라이더
 radius = st.slider(
