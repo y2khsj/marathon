@@ -44,7 +44,7 @@ gpx_path = "2024jtbc.gpx"
 toilet_path = "Seoul_Open_Restrooms.csv"
 
 route_coords = parse_gpx(gpx_path)
-route_sampled = route_coords[::30]  # 약 30~50m 간격으로 샘플링
+route_sampled = route_coords[::60]  # 약 30~50m 간격으로 샘플링
 
 toilets_df = pd.read_csv(toilet_path, encoding="euc-kr")
 toilets_df = toilets_df.rename(columns={"x 좌표": "lon", "y 좌표": "lat"})
